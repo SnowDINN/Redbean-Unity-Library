@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Redbean.Base
 {
-	public class SettingsBase<T> where T : Object
+	public class SettingsBase<T> where T : ScriptableObject
 	{
 		private static readonly string resourceLocation = $"Settings/{typeof(T).Name.Replace("Installer", "")}";
 		
