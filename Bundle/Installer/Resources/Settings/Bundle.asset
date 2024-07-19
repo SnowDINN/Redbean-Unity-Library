@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0204aeed6280304a8599691c7397d51, type: 3}
   m_Name: Bundle
   m_EditorClassIdentifier: 
-  Labels: []
+  Labels:
+  - Popup
