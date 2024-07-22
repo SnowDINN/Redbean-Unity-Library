@@ -17,7 +17,7 @@ namespace Redbean
 			UseProxy = false,
 		})
 		{
-			BaseAddress = new Uri("https://localhost:44395"),
+			BaseAddress = new Uri("http://localhost"),
 			DefaultRequestHeaders =
 			{
 				{ "Version", AppSettings.Version },
