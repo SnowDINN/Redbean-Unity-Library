@@ -10,28 +10,60 @@ namespace Redbean.Api
 {
 	public class ApiBase
 	{
+		private const int retryCount = 3;
+		
 		protected static async Task<T> SendGetRequest<T>(string uri, params object[] args)
 		{
 			var format = string.Format(uri, args.Where(_ => _ is string or int).ToArray());
-			var apiResponse = await GetApi(format);
+			var response = "";
+			
+			var index = 0;
+			while (index < retryCount)
+			{
+				response = await GetApi(format);
+				if (!string.IsNullOrEmpty(response))
+					break;
+					
+				index += 1;
+			}
 
-			return JsonConvert.DeserializeObject<T>(apiResponse);
+			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
 		protected static async Task<T> SendPostRequest<T>(string uri, object obj)
 		{
 			var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
-			var apiResponse = await PostApi(uri, content);
+			var response = "";
+			
+			var index = 0;
+			while (index < retryCount)
+			{
+				response = await PostApi(uri, content);
+				if (!string.IsNullOrEmpty(response))
+					break;
+					
+				index += 1;
+			}
 
-			return JsonConvert.DeserializeObject<T>(apiResponse);
+			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
 		protected static async Task<T> SendDeleteRequest<T>(string uri, params object[] args)
 		{
 			var format = string.Format(uri, args.Where(_ => _ is string or int).ToArray());
-			var apiResponse = await DeleteApi(format);
+			var response = "";
 			
-			return JsonConvert.DeserializeObject<T>(apiResponse);
+			var index = 0;
+			while (index < retryCount)
+			{
+				response = await DeleteApi(format);
+				if (!string.IsNullOrEmpty(response))
+					break;
+					
+				index += 1;
+			}
+			
+			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
 		private static async Task<string> GetApi(string uri)
@@ -67,7 +99,7 @@ namespace Redbean.Api
 				Log.Fail("GET", $"<{httpUri}> ({stopwatch.ElapsedMilliseconds}ms) {e.Message}");
 				request?.Dispose();
 
-				throw;
+				return string.Empty;
 			}
 			finally
 			{
