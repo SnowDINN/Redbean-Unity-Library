@@ -17,7 +17,7 @@ namespace Redbean
 			UseProxy = false,
 		})
 		{
-			BaseAddress = new Uri("http://localhost"),
+			BaseAddress = new Uri("https://localhost:44395"),
 			DefaultRequestHeaders =
 			{
 				{ "Version", AppSettings.Version },
@@ -33,7 +33,7 @@ namespace Redbean
 				            && typeof(IApiContainer).IsAssignableFrom(_)
 				            && !_.IsInterface
 				            && !_.IsAbstract)
-				.Select(_ => Activator.CreateInstance(Type.GetType(_.FullName)) as IApiContainer)
+				.Select(_ => Activator.CreateInstance(_) as IApiContainer)
 				.ToArray();
 
 			foreach (var api in apis)

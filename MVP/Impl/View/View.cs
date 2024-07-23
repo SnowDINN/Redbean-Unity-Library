@@ -43,7 +43,7 @@ namespace Redbean.MVP
 			
 			var type = Type.GetType(PresenterFullName);
 			if (type != null)
-				presenter = Activator.CreateInstance(Type.GetType(type.FullName)) as Presenter;
+				presenter = Activator.CreateInstance(type) as Presenter;
 			
 			presenter?.BindView(this);
 			presenter?.Setup();

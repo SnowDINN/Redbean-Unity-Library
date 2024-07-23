@@ -24,7 +24,7 @@ namespace Redbean.Singleton
 				            && !typeof(IRxModel).IsAssignableFrom(x)
 				            && !x.IsInterface
 				            && !x.IsAbstract)
-				.Select(x => Activator.CreateInstance(Type.GetType(x.FullName)) as IModel)
+				.Select(x => Activator.CreateInstance(x) as IModel)
 				.ToArray();
 
 			foreach (var model in models)

@@ -26,7 +26,7 @@ namespace Redbean
 				            && !typeof(MonoBehaviour).IsAssignableFrom(x)
 				            && !x.IsInterface
 				            && !x.IsAbstract)
-				.Select(x => Activator.CreateInstance(Type.GetType(x.FullName)) as ISingletonContainer)
+				.Select(x => Activator.CreateInstance(x) as ISingletonContainer)
 				.ToArray();
 
 			foreach (var nativeSingleton in nativeSingletons)

@@ -36,7 +36,7 @@ namespace Redbean
 				.Where(_ => typeof(IAppBootstrap).IsAssignableFrom(_)
 				            && !_.IsInterface
 				            && !_.IsAbstract)
-				.Select(_ => Activator.CreateInstance(Type.GetType(_.FullName)) as IAppBootstrap)
+				.Select(_ => Activator.CreateInstance(_) as IAppBootstrap)
 				.ToArray();
 
 			var flags = Enum.GetNames(typeof(AppBootstrapType));

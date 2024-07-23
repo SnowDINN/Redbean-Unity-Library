@@ -36,7 +36,6 @@ namespace Redbean.Table
 				foreach (var item in skipRows)
 				{
 					var type = Type.GetType($"{nameof(Redbean)}.Table.T{table.Key}");
-					
 					if (Activator.CreateInstance(type) is ITableContainer instance)
 						instance.Apply(item);
 				}
