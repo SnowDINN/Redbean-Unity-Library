@@ -8,9 +8,6 @@ namespace Redbean
 {
 	public class ApiContainer : IAppBootstrap
 	{
-		public AppBootstrapType ExecutionType => AppBootstrapType.Runtime;
-		public int ExecutionOrder => 20;
-		
 		private static readonly Dictionary<Type, IApiContainer> apiGroup = new();
 		public static readonly HttpClient Http = new(new HttpClientHandler
 		{

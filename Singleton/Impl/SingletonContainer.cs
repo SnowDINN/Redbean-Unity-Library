@@ -11,10 +11,7 @@ namespace Redbean
 	{
 		private static readonly Dictionary<Type, ISingletonContainer> singletonGroup = new();
 		private GameObject parent;
-
-		public AppBootstrapType ExecutionType => AppBootstrapType.Runtime;
-		public int ExecutionOrder => 10;
-
+		
 		public Task Setup()
 		{
 #region Native

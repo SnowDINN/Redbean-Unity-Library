@@ -7,9 +7,6 @@ namespace Redbean.Table
 {
 	public partial class TableContainer : IAppBootstrap
 	{
-		public AppBootstrapType ExecutionType => AppBootstrapType.Login;
-		public int ExecutionOrder => 110;
-
 		public static Dictionary<string, string> RawTable = new();
 
 		public Task Setup()

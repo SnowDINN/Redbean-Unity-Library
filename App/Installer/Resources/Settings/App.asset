@@ -12,4 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70114e342f543d64fbec0006582bd79c, type: 3}
   m_Name: App
   m_EditorClassIdentifier: 
+  RuntimeBootstrap:
+  - BootstrapName: Redbean.SingletonContainer
+    BootstrapType: 0
+  - BootstrapName: Redbean.ApiContainer
+    BootstrapType: 0
+  - BootstrapName: Redbean.AppRuntimeBootstrap
+    BootstrapType: 0
+  - BootstrapName: Redbean.Firebase.AppLoginBootstrap
+    BootstrapType: 100
+  - BootstrapName: Redbean.Table.TableContainer
+    BootstrapType: 100
+  - BootstrapName: Redbean.Bundle.BundleBootstrap
+    BootstrapType: 100
   Version: 

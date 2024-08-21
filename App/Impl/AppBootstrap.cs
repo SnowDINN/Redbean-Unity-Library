@@ -29,31 +29,15 @@ namespace Redbean
 			Object.DontDestroyOnLoad(go);
 		}
 
-		public static async Task BootstrapInitialize()
-		{
-			var bootstraps = AppDomain.CurrentDomain.GetAssemblies()
-				.SelectMany(_ => _.GetTypes())
-				.Where(_ => typeof(IAppBootstrap).IsAssignableFrom(_)
-				            && !_.IsInterface
-				            && !_.IsAbstract)
-				.Select(_ => Activator.CreateInstance(_) as IAppBootstrap)
-				.ToArray();
-
-			var flags = Enum.GetNames(typeof(AppBootstrapType));
-			foreach (var flag in flags)
-			{
-				var type = Enum.Parse<AppBootstrapType>(flag);
-				Bootstraps[type] = bootstraps.Where(_ => _.ExecutionType == type).ToArray();
-			}
-
-			await BootstrapSetup(AppBootstrapType.Runtime);
-		}
-
 		public static async Task BootstrapSetup(AppBootstrapType type)
 		{
-			var orderBy = Bootstraps[type].OrderBy(_ => _.Order).ToArray();
-			foreach (var bootstrap in orderBy)
+			var bootstrapContexts = AppSettings.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
+			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as IAppBootstrap).ToArray();
+	
+			foreach (var bootstrap in bootstraps)
 				await bootstrap.Setup();
+
+			Bootstraps[type] = bootstraps;
 		}
 
 		public static void BootstrapDispose()
@@ -62,8 +46,8 @@ namespace Redbean
 			foreach (var bootstraps in Bootstraps.Values)
 				bootstrapGroup.AddRange(bootstraps);
 
-			var orderByDescending = bootstrapGroup.OrderByDescending(_ => _.Order).ToArray();
-			foreach (var bootstrap in orderByDescending)
+			bootstrapGroup.Reverse();
+			foreach (var bootstrap in bootstrapGroup)
 				bootstrap.Dispose();
 		}
 	}

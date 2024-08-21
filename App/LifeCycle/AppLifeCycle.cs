@@ -11,7 +11,7 @@ namespace Redbean
 
 		private async void Awake()
 		{
-			await AppBootstrap.BootstrapInitialize();
+			await AppBootstrap.BootstrapSetup(AppBootstrapType.Runtime);
 			
 			IsAppReady = true;
 		}
