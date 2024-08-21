@@ -11,7 +11,7 @@ namespace Redbean.Singleton
 {
 	public class MvpSingleton : ISingletonContainer
 	{
-		public const string PLAYER_PREFS_KEY = "PLAYER_PREFS__DATA_GROUP";
+		public const string PLAYER_PREFS_KEY = "PLAYER_PREFS_DATA_GROUP";
 		
 		private readonly Dictionary<string, string> playerPrefsGroup = new();
 		private readonly Dictionary<Type, IModel> modelGroup = new();

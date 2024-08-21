@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Discovery;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -12,7 +14,7 @@ namespace Redbean.Api
 	{
 		private const int retryCount = 3;
 		
-		protected static async Task<T> SendGetRequest<T>(string uri, params object[] args)
+		protected static async Task<T> GetRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default)
 		{
 			var format = string.Format(uri, args.Where(_ => _ is string or int).ToArray());
 			var response = "";
@@ -20,7 +22,7 @@ namespace Redbean.Api
 			var index = 0;
 			while (index < retryCount)
 			{
-				response = await GetApi(format);
+				response = await GetApi(format, cancellationToken);
 				if (!string.IsNullOrEmpty(response))
 					break;
 					
@@ -30,7 +32,7 @@ namespace Redbean.Api
 			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
-		protected static async Task<T> SendPostRequest<T>(string uri, object obj)
+		protected static async Task<T> PostRequestAsync<T>(string uri, object obj, CancellationToken cancellationToken = default)
 		{
 			var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
 			var response = "";
@@ -38,7 +40,7 @@ namespace Redbean.Api
 			var index = 0;
 			while (index < retryCount)
 			{
-				response = await PostApi(uri, content);
+				response = await PostApi(uri, content, cancellationToken);
 				if (!string.IsNullOrEmpty(response))
 					break;
 					
@@ -48,7 +50,7 @@ namespace Redbean.Api
 			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
-		protected static async Task<T> SendDeleteRequest<T>(string uri, params object[] args)
+		protected static async Task<T> DeleteRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default)
 		{
 			var format = string.Format(uri, args.Where(_ => _ is string or int).ToArray());
 			var response = "";
@@ -56,7 +58,7 @@ namespace Redbean.Api
 			var index = 0;
 			while (index < retryCount)
 			{
-				response = await DeleteApi(format);
+				response = await DeleteApi(format, cancellationToken);
 				if (!string.IsNullOrEmpty(response))
 					break;
 					
@@ -66,7 +68,7 @@ namespace Redbean.Api
 			return JsonConvert.DeserializeObject<T>(response);
 		}
 		
-		private static async Task<string> GetApi(string uri)
+		private static async Task<string> GetApi(string uri, CancellationToken cancellationToken = default)
 		{
 			var stopwatch = Stopwatch.StartNew();
 			var httpUri = uri.Split('?')[0].TrimStart('/');
@@ -74,7 +76,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiContainer.Http.GetAsync(uri);
+				request = await ApiSingleton.Http.GetAsync(uri, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();
@@ -112,7 +114,7 @@ namespace Redbean.Api
 			return string.Empty;
 		}
 		
-		private static async Task<string> PostApi(string uri, HttpContent content = null)
+		private static async Task<string> PostApi(string uri, HttpContent content = default, CancellationToken cancellationToken = default)
 		{
 			var stopwatch = Stopwatch.StartNew();
 			var httpUri = uri.Split('?')[0].TrimStart('/');
@@ -120,7 +122,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiContainer.Http.PostAsync(uri, content);
+				request = await ApiSingleton.Http.PostAsync(uri, content, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();
@@ -158,7 +160,7 @@ namespace Redbean.Api
 			return string.Empty;
 		}
 		
-		private static async Task<string> DeleteApi(string uri)
+		private static async Task<string> DeleteApi(string uri, CancellationToken cancellationToken = default)
 		{
 			var stopwatch = Stopwatch.StartNew();
 			var httpUri = uri.Split('?')[0].TrimStart('/');
@@ -166,7 +168,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiContainer.Http.DeleteAsync(uri);
+				request = await ApiSingleton.Http.DeleteAsync(uri, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();

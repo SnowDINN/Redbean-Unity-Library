@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Redbean.MVP;
 using Redbean.Singleton;
 
@@ -17,28 +16,6 @@ namespace Redbean
 				cancellationTokenSource.Cancel();
 		
 			cancellationTokenSource.Dispose();
-		}
-		
-		public static async Task WaitWhile(this IExtension extension, Func<bool> condition, int frequency = 25, int timeout = -1)
-		{
-			var waitTask = Task.Run(async () =>
-			{
-				while (condition()) await Task.Delay(frequency);
-			});
-
-			if(waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout)))
-				throw new TimeoutException();
-		}
-		
-		public static async Task WaitUntil(this IExtension extension, Func<bool> condition, int frequency = 25, int timeout = -1)
-		{
-			var waitTask = Task.Run(async () =>
-			{
-				while (!condition()) await Task.Delay(frequency);
-			});
-
-			if (waitTask != await Task.WhenAny(waitTask, Task.Delay(timeout))) 
-				throw new TimeoutException();
 		}
 		
 		/// <summary>
@@ -62,6 +39,16 @@ namespace Redbean
 		private static object GetModel(Type type) => SingletonContainer.GetSingleton<MvpSingleton>().GetModel(type);
 		
 		/// <summary>
+		/// API 호출
+		/// </summary>
+		private static T GetApi<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol<T>();
+		
+		/// <summary>
+		/// API 호출
+		/// </summary>
+		private static object GetApi(Type type) => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol(type);
+		
+		/// <summary>
 		/// 모델 호출
 		/// </summary>
 		public static T GetModel<T>(this IExtension extension) where T : IModel => GetModel<T>();
@@ -80,5 +67,22 @@ namespace Redbean
 		/// 싱글톤 호출
 		/// </summary>
 		public static object GetSingleton(this IExtension extension, Type type) => GetSingleton(type);
+		
+		/// <summary>
+		/// API 호출
+		/// </summary>
+		public static T GetApi<T>(this IExtension extension) where T : ApiProtocol => GetApi<T>();
+		
+		/// <summary>
+		/// API 호출
+		/// </summary>
+		public static object GetApi(this IExtension extension, Type type) => GetApi(type);
+		
+#if UNITY_EDITOR
+		/// <summary>
+		/// API 호출
+		/// </summary>
+		public static T EditorGetApi<T>(this IExtension extension) where T : ApiProtocol => GetApi<T>();
+#endif
 	}
 }

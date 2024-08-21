@@ -19,7 +19,7 @@ MonoBehaviour:
     BootstrapType: 0
   - BootstrapName: Redbean.AppRuntimeBootstrap
     BootstrapType: 0
-  - BootstrapName: Redbean.Firebase.AppLoginBootstrap
+  - BootstrapName: Redbean.AppLoginBootstrap
     BootstrapType: 100
   - BootstrapName: Redbean.Table.TableContainer
     BootstrapType: 100
