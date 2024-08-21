@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Redbean.Table
 {
-	public class GoogleTableGenerator
+	public class TableGenerator
 	{
 		public const string Namespace = nameof(Redbean);
 		

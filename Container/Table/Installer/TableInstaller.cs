@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Redbean.Table
 {
-	[CreateAssetMenu(fileName = "GoogleTable", menuName = "Redbean/GoogleTable")]
-	public class GoogleTableInstaller : ScriptableObject
+	[CreateAssetMenu(fileName = "Table", menuName = "Redbean/Table")]
+	public class TableInstaller : ScriptableObject
 	{
 		[Header("Get generation path")]
 		public string Path;
 		public string ItemPath;
 	}
 	
-	public class GoogleTableSettings : SettingsBase<GoogleTableInstaller>
+	public class GoogleTableSettings : SettingsBase<TableInstaller>
 	{
 		public static string Path
 		{

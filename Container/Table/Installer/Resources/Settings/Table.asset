@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20158685f2519974a8f57ee8c0537728, type: 3}
-  m_Name: GoogleTable
+  m_Name: Table
   m_EditorClassIdentifier: 
   Path: Assets/_/Scripts/Contents/Common/Table
   ItemPath: Assets/_/Scripts/Contents/Common/Table/Sheets
