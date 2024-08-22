@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -50,6 +51,7 @@ namespace Redbean.Api
 		private static async void GenerateCSharpApiAsync(ApiType type, Type wrapper, IReadOnlyList<KeyValuePair<string, JObject>> apis)
 		{
 			var stringBuilder = new StringBuilder();
+			stringBuilder.AppendLine("using System.Threading;");
 			stringBuilder.AppendLine("using System.Threading.Tasks;");
 			stringBuilder.AppendLine();
 			stringBuilder.AppendLine($"namespace {Namespace}.Api");
@@ -77,7 +79,7 @@ namespace Redbean.Api
 				}
 				
 				// Request Body 존재할 경우
-				var requestType = "params object[] args";
+				var requestType = "object[] args = default";
 				if (jObject.TryGetValue("requestBody", out var requests))
 				{
 					requestType = requests.SelectToken("content.application/json.schema.$ref")
@@ -105,8 +107,10 @@ namespace Redbean.Api
 				}
 			
 				var requestUri = $"\"{apis[idx].Key}{parameter}\"";
-				stringBuilder.AppendLine($"\t\tpublic static async Task<{wrapper.Name}{responseType}> {apis[idx].Key.Split('/').Last()}Request({requestType}) =>");
-				stringBuilder.AppendLine($"\t\t\tawait {type}RequestAsync<{wrapper.Name}{responseType}>({requestUri}, args);");
+				stringBuilder.AppendLine
+					($"\t\tpublic static async Task<{wrapper.Name}{responseType}> {apis[idx].Key.Split('/').Last()}Request({requestType}, {nameof(CancellationToken)} cancellationToken = default) =>");
+				stringBuilder.AppendLine
+					($"\t\t\tawait {type}RequestAsync<{wrapper.Name}{responseType}>({requestUri}, args, cancellationToken);");
 				
 				if (idx < apis.Count - 1)
 					stringBuilder.AppendLine();

@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿
+using System.Threading;
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -8,6 +10,10 @@ namespace Redbean
 	{
 		public static bool IsAppChecked { get; private set; }
 		public static bool IsAppReady { get; private set; }
+
+		public static CancellationToken AppCancellationToken => cancellationTokenSource.Token;
+
+		private static readonly CancellationTokenSource cancellationTokenSource = new();
 
 		private async void Awake()
 		{
@@ -21,6 +27,9 @@ namespace Redbean
 			AppBootstrap.BootstrapDispose();
 			
 			IsAppReady = false;
+			
+			cancellationTokenSource.Cancel();
+			cancellationTokenSource.Dispose();
 			
 #if UNITY_EDITOR
 			if (EditorApplication.isPlaying)
