@@ -53,14 +53,16 @@ namespace Redbean
 			
 			runtimeBootstrapRecorder.drawHeaderCallback += OnRuntimeBootstrapDrawHeaderCallback;
 			runtimeBootstrapRecorder.drawElementCallback += OnRuntimeBootstrapDrawHeaderCallback;
+			runtimeBootstrapRecorder.onChangedCallback += OnChangedCallback;
 		}
 
 		private void OnDisable()
 		{
 			runtimeBootstrapRecorder.drawHeaderCallback -= OnRuntimeBootstrapDrawHeaderCallback;
 			runtimeBootstrapRecorder.drawElementCallback -= OnRuntimeBootstrapDrawHeaderCallback;
+			runtimeBootstrapRecorder.onChangedCallback -= OnChangedCallback;
 		}
-		
+
 		private void OnRuntimeBootstrapDrawHeaderCallback(Rect rect)
 		{
 			EditorGUI.LabelField(rect, "Runtime Bootstrap List");
@@ -82,6 +84,13 @@ namespace Redbean
 			if (!EditorGUI.EndChangeCheck())
 				return;
 
+			EditorUtility.SetDirty(app);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+		}
+		
+		private void OnChangedCallback(ReorderableList list)
+		{
 			EditorUtility.SetDirty(app);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();

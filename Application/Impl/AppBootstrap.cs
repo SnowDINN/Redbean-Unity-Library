@@ -34,10 +34,10 @@ namespace Redbean
 			var bootstrapContexts = AppSettings.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
 			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as IAppBootstrap).ToArray();
 	
+			Bootstraps[type] = bootstraps;
+			
 			foreach (var bootstrap in bootstraps)
 				await bootstrap.Setup();
-
-			Bootstraps[type] = bootstraps;
 		}
 
 		public static void BootstrapDispose()

@@ -15,8 +15,6 @@ MonoBehaviour:
   RuntimeBootstrap:
   - BootstrapName: Redbean.SingletonContainer
     BootstrapType: 0
-  - BootstrapName: Redbean.ApiContainer
-    BootstrapType: 0
   - BootstrapName: Redbean.AppRuntimeBootstrap
     BootstrapType: 0
   - BootstrapName: Redbean.AppLoginBootstrap
