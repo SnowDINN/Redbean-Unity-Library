@@ -59,25 +59,48 @@ namespace Redbean.Api
 			stringBuilder.AppendLine($"\tpublic class Api{type}Request : {nameof(ApiBase)}");
 			stringBuilder.AppendLine("\t{");
 
+			var runtimeApis = apis.Where(_ => !_.Key.StartsWith("/Edit")).ToArray();
+			var editApis = apis.Where(_ => _.Key.StartsWith("/Edit")).ToArray();
+			
+			stringBuilder.Append(GenerateCSharpMethod(type, wrapper, runtimeApis));
+			stringBuilder.AppendLine();
+			
+			stringBuilder.AppendLine("#if UNITY_EDITOR");
+			stringBuilder.Append(GenerateCSharpMethod(type, wrapper, editApis));
+			stringBuilder.AppendLine("#endif");
+			
+			stringBuilder.AppendLine("\t}");
+			stringBuilder.AppendLine("}");
+			
+			if (Directory.Exists(ApiSettings.ProtocolPath))
+				Directory.CreateDirectory(ApiSettings.ProtocolPath);
+				
+			await File.WriteAllTextAsync($"{ApiSettings.ProtocolPath}/Api{type}Request.cs", $"{stringBuilder}");
+		}
+
+		private static string GenerateCSharpMethod(ApiType type, Type wrapper, IReadOnlyList<KeyValuePair<string, JObject>> apis)
+		{
+			var stringBuilder = new StringBuilder();
+			
 			for (var idx = 0; idx < apis.Count; idx++)
 			{
 				var parameter = "";
-				
+            				
 				var jObject = apis[idx].Value[$"{type}".ToLower()].ToObject<JObject>();
 				if (jObject.TryGetValue("parameters", out var parameters))
 				{
 					parameter = "?";
-					
+            					
 					var parameterList = parameters.ToObject<List<Dictionary<string, object>>>();
 					for (var i = 0; i < parameterList.Count; i++)
 					{
 						parameter += $"{parameterList[i]["name"]}={{{i}}}";
-
+            
 						if (i < parameterList.Count - 1)
 							parameter += "&";
 					}
 				}
-				
+            				
 				// Request Body 존재할 경우
 				var requestType = "object[] args = default";
 				if (jObject.TryGetValue("requestBody", out var requests))
@@ -86,10 +109,10 @@ namespace Redbean.Api
 						.Value<string>()
 						.Split('/')
 						.Last();
-
+            
 					requestType += " args";
 				}
-
+            
 				// Response Type 존재할 경우
 				var responseType = "";
 				if (jObject.TryGetValue("responses", out var responses))
@@ -101,28 +124,22 @@ namespace Redbean.Api
 							.Value<string>()
 							.Split('/')
 							.Last();
-
+            
 						responseType = $"<{responseType}>";
 					}
 				}
-			
+            			
 				var requestUri = $"\"{apis[idx].Key}{parameter}\"";
 				stringBuilder.AppendLine
 					($"\t\tpublic static async Task<{wrapper.Name}{responseType}> {apis[idx].Key.Split('/').Last()}Request({requestType}, {nameof(CancellationToken)} cancellationToken = default) =>");
 				stringBuilder.AppendLine
 					($"\t\t\tawait {type}RequestAsync<{wrapper.Name}{responseType}>({requestUri}, args, cancellationToken);");
-				
+            				
 				if (idx < apis.Count - 1)
 					stringBuilder.AppendLine();
 			}
 			
-			stringBuilder.AppendLine("\t}");
-			stringBuilder.AppendLine("}");
-			
-			if (Directory.Exists(ApiSettings.ProtocolPath))
-				Directory.CreateDirectory(ApiSettings.ProtocolPath);
-				
-			await File.WriteAllTextAsync($"{ApiSettings.ProtocolPath}/Api{type}Request.cs", $"{stringBuilder}");
+			return $"{stringBuilder}";
 		}
 
 		private static void DeleteFiles(string path)
