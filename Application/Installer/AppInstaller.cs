@@ -79,8 +79,12 @@ namespace Redbean
 					(AppBootstrapType)EditorGUI.EnumPopup(new Rect(rect.x + rect.width * 0.75f, rect.y + 2.5f, rect.width  * 0.25f, rect.height),
 					                                      app.RuntimeBootstrap[index].BootstrapType);
 			}
-			if (EditorGUI.EndChangeCheck())
-				EditorUtility.SetDirty(target);
+			if (!EditorGUI.EndChangeCheck())
+				return;
+
+			EditorUtility.SetDirty(app);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
 		}
 
 		public override void OnInspectorGUI()

@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Discovery;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -14,7 +13,7 @@ namespace Redbean.Api
 	{
 		private const int retryCount = 3;
 		
-		protected static async Task<T> GetRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default)
+		protected static async Task<T> GetRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default) where T : new()
 		{
 			args ??= new[] { "" };
 				
@@ -34,10 +33,12 @@ namespace Redbean.Api
 				index += 1;
 			}
 
-			return JsonConvert.DeserializeObject<T>(response);
+			return string.IsNullOrEmpty(response) 
+				? new T()
+				: JsonConvert.DeserializeObject<T>(response);
 		}
 		
-		protected static async Task<T> PostRequestAsync<T>(string uri, object args, CancellationToken cancellationToken = default)
+		protected static async Task<T> PostRequestAsync<T>(string uri, object args, CancellationToken cancellationToken = default) where T : new()
 		{
 			args ??= new[] { "" };
 			
@@ -57,10 +58,12 @@ namespace Redbean.Api
 				index += 1;
 			}
 
-			return JsonConvert.DeserializeObject<T>(response);
+			return string.IsNullOrEmpty(response) 
+				? new T()
+				: JsonConvert.DeserializeObject<T>(response);
 		}
 		
-		protected static async Task<T> DeleteRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default)
+		protected static async Task<T> DeleteRequestAsync<T>(string uri, object[] args, CancellationToken cancellationToken = default) where T : new()
 		{
 			args ??= new[] { "" };
 			
@@ -80,7 +83,9 @@ namespace Redbean.Api
 				index += 1;
 			}
 			
-			return JsonConvert.DeserializeObject<T>(response);
+			return string.IsNullOrEmpty(response) 
+				? new T()
+				: JsonConvert.DeserializeObject<T>(response);
 		}
 		
 		private static async Task<string> GetApi(string uri, CancellationToken cancellationToken = default)
@@ -115,6 +120,13 @@ namespace Redbean.Api
 				}
 			}
 			catch (HttpRequestException e)
+			{
+				Log.Fail("GET", $"<{httpUri}> ({stopwatch.ElapsedMilliseconds}ms) {e.Message}");
+				request?.Dispose();
+
+				return string.Empty;
+			}
+			catch (TaskCanceledException e)
 			{
 				Log.Fail("GET", $"<{httpUri}> ({stopwatch.ElapsedMilliseconds}ms) {e.Message}");
 				request?.Dispose();
@@ -167,6 +179,13 @@ namespace Redbean.Api
 				
 				throw;
 			}
+			catch (TaskCanceledException e)
+			{
+				Log.Fail("GET", $"<{httpUri}> ({stopwatch.ElapsedMilliseconds}ms) {e.Message}");
+				request?.Dispose();
+
+				return string.Empty;
+			}
 			finally
 			{
 				stopwatch.Stop();
@@ -212,6 +231,13 @@ namespace Redbean.Api
 				request?.Dispose();
 
 				throw;
+			}
+			catch (TaskCanceledException e)
+			{
+				Log.Fail("GET", $"<{httpUri}> ({stopwatch.ElapsedMilliseconds}ms) {e.Message}");
+				request?.Dispose();
+
+				return string.Empty;
 			}
 			finally
 			{
