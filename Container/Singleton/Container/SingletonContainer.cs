@@ -52,8 +52,6 @@ namespace Redbean
 				singletonGroup.TryAdd(monoSingleton, parent.AddComponent(monoSingleton) as ISingletonContainer);
 
 #endregion
-
-			Log.System("Singleton has been bind.");
 			return Task.CompletedTask;
 		}
 
@@ -61,8 +59,6 @@ namespace Redbean
 		{
 			foreach (var singleton in singletonGroup.Values)
 				singleton.Dispose();
-			
-			Log.System("Singleton has been terminated.");
 		}
 
 		/// <summary>

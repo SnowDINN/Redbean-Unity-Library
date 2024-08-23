@@ -1,28 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Redbean.Table
 {
-	public partial class TableContainer : IAppBootstrap
+	public partial class TableContainer
 	{
-		public static Dictionary<string, string> RawTable = new();
-
-		public Task Setup()
+		public static void StartParsing(Dictionary<string, string> data)
 		{
-			if (RawTable.Any())
-				Parse(RawTable);
-			
-			return Task.CompletedTask;
+			if (data.Any())
+				Parse(data);
 		}
 
-		public void Dispose()
-		{
-			RawTable.Clear();
-		}
-
-		private void Parse(Dictionary<string, string> tables)
+		private static void Parse(Dictionary<string, string> tables)
 		{
 			foreach (var table in tables)
 			{

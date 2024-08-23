@@ -17,10 +17,8 @@ MonoBehaviour:
     BootstrapType: 0
   - BootstrapName: Redbean.AppRuntimeBootstrap
     BootstrapType: 0
+  - BootstrapName: Redbean.Bundle.BundleContainer
+    BootstrapType: 100
   - BootstrapName: Redbean.AppLoginBootstrap
-    BootstrapType: 100
-  - BootstrapName: Redbean.Table.TableContainer
-    BootstrapType: 100
-  - BootstrapName: Redbean.Bundle.BundleBootstrap
     BootstrapType: 100
   Version: 
