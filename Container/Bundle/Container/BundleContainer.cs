@@ -1,16 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Redbean.Bundle;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Redbean.Singleton
+namespace Redbean.Bundle
 {
-	public class BundleSingleton : ISingletonContainer
+	public class BundleContainer : IAppBootstrap
 	{
-		private Dictionary<string, BundleAsset> assetGroup = new();
+		private static Dictionary<string, BundleAsset> assetGroup = new();
+		
+		public async Task Setup()
+		{
+			var size = 0L;
+			foreach (var label in AddressableSettings.Labels)
+				size += await Addressables.GetDownloadSizeAsync(label).Task;
 
-		public T LoadAsset<T>(string key, Transform parent = null) where T : Object
+			if (size > 0)
+			{
+				foreach (var label in AddressableSettings.Labels)
+				{
+					var download = await Addressables.DownloadDependenciesAsync(label).Task;
+					Addressables.Release(download);
+				}
+			}
+
+			var convert = ConvertDownloadSize(size);
+			Log.Success("Bundle", $"Success to load to the bundles. [ {convert.value}{convert.type} ]");
+		}
+		
+		public void Dispose()
+		{
+			assetGroup.Clear();
+		}
+
+		public static T LoadAsset<T>(string key, Transform parent = null) where T : Object
 		{
 			var bundle = new BundleAsset();
 			
@@ -29,7 +53,7 @@ namespace Redbean.Singleton
 			return asset;
 		}
 
-		public void Release(string key, int instanceId)
+		public static void Release(string key, int instanceId)
 		{
 #region Try Get Asset
 
@@ -52,7 +76,7 @@ namespace Redbean.Singleton
 #endregion
 		}
 
-		public void AutoRelease()
+		public static void AutoRelease()
 		{
 			var assetsArray = assetGroup.ToList();
 			for (var i = 0; i < assetsArray.Count; i++)
@@ -75,13 +99,22 @@ namespace Redbean.Singleton
 			assetGroup = assetsArray.ToDictionary(_ => _.Key, _ => _.Value);
 		}
 		
-
-		public void Dispose()
+		private static (string value, string type) ConvertDownloadSize(long size)
 		{
-			assetGroup.Clear();
+			var value = (double)size;
+			value /= 1024;
+			if (value < 1024)
+				return ($"{value:F1}", "KB");
+			
+			value /= 1024;
+			if (value < 1024)
+				return ($"{value:F1}", "MB");
+			
+			value /= 1024;
+			return ($"{value:F1}", "GB");
 		}
 
-		private BundleAsset LoadBundle<T>(string key) where T : Object
+		private static BundleAsset LoadBundle<T>(string key) where T : Object
 		{
 			var value = Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
 			var bundle = new BundleAsset

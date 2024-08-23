@@ -7,7 +7,7 @@ namespace Redbean.Bundle
 	public class BundleAsset
 	{
 		public Dictionary<int, Object> References = new();
-		public Object Asset;
+		public Object Asset = new();
 
 		public void Release()
 		{

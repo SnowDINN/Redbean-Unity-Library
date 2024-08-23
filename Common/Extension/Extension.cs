@@ -41,12 +41,12 @@ namespace Redbean
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static T GetApi<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol<T>();
+		private static T GetProtocol<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol<T>();
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static object GetApi(Type type) => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol(type);
+		private static object GetProtocol(Type type) => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol(type);
 		
 		/// <summary>
 		/// 모델 호출
@@ -71,18 +71,18 @@ namespace Redbean
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static T GetApi<T>(this IExtension extension) where T : ApiProtocol => GetApi<T>();
+		public static T GetProtocol<T>(this IExtension extension) where T : ApiProtocol => GetProtocol<T>();
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static object GetApi(this IExtension extension, Type type) => GetApi(type);
+		public static object GetProtocol(this IExtension extension, Type type) => GetProtocol(type);
 		
 #if UNITY_EDITOR
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static T EditorGetApi<T>(this IExtension extension) where T : ApiProtocol => GetApi<T>();
+		public static T EditorGetApi<T>(this IExtension extension) where T : ApiProtocol => GetProtocol<T>();
 #endif
 	}
 }
