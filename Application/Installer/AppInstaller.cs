@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Redbean.Base;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
