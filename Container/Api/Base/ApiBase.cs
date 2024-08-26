@@ -96,7 +96,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiSingleton.Http.GetAsync(uri, cancellationToken);
+				request = await ApiContainer.Http.GetAsync(uri, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();
@@ -152,7 +152,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiSingleton.Http.PostAsync(uri, content, cancellationToken);
+				request = await ApiContainer.Http.PostAsync(uri, content, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();
@@ -205,7 +205,7 @@ namespace Redbean.Api
 			HttpResponseMessage request = null;
 			try
 			{
-				request = await ApiSingleton.Http.DeleteAsync(uri, cancellationToken);
+				request = await ApiContainer.Http.DeleteAsync(uri, cancellationToken);
 				if (request.IsSuccessStatusCode)
 				{
 					var response = await request.Content.ReadAsStringAsync();

@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Redbean
 {
-	public class ApiSingleton : ISingletonContainer
+	public class ApiContainer : ISingletonContainer
 	{
 		public static readonly HttpClient Http = new(new HttpClientHandler
 		{

@@ -9,14 +9,14 @@ using UnityEngine;
 
 namespace Redbean.Singleton
 {
-	public class MvpSingleton : ISingletonContainer
+	public class MvpContainer : ISingletonContainer
 	{
 		public const string PLAYER_PREFS_KEY = "PLAYER_PREFS_DATA_GROUP";
 		
 		private readonly Dictionary<string, string> playerPrefsGroup = new();
 		private readonly Dictionary<Type, IModel> modelGroup = new();
 
-		public MvpSingleton()
+		public MvpContainer()
 		{
 			var models = AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(x => x.GetTypes())

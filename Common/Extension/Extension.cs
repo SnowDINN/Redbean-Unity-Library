@@ -31,22 +31,22 @@ namespace Redbean
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		private static T GetModel<T>() where T : IModel => SingletonContainer.GetSingleton<MvpSingleton>().GetModel<T>();
+		private static T GetModel<T>() where T : IModel => SingletonContainer.GetSingleton<MvpContainer>().GetModel<T>();
 		
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		private static object GetModel(Type type) => SingletonContainer.GetSingleton<MvpSingleton>().GetModel(type);
+		private static object GetModel(Type type) => SingletonContainer.GetSingleton<MvpContainer>().GetModel(type);
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static T GetProtocol<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol<T>();
+		private static T GetProtocol<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiContainer>().GetProtocol<T>();
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static object GetProtocol(Type type) => SingletonContainer.GetSingleton<ApiSingleton>().GetProtocol(type);
+		private static object GetProtocol(Type type) => SingletonContainer.GetSingleton<ApiContainer>().GetProtocol(type);
 		
 		/// <summary>
 		/// 모델 호출
