@@ -6,20 +6,23 @@ namespace Redbean.Security
 {
 	public class AES128
 	{
-		private const string SecurityKey = "redbean.boongsin";
-		
+		private readonly string SecurityKey;
+		private const int byteIndex = 16;
+
 		private readonly Aes Aes;
 
-		public AES128()
+		public AES128(string securityKey)
 		{
 			Aes = Aes.Create();
 			Aes.Mode = CipherMode.CBC;
 			Aes.Padding = PaddingMode.PKCS7;
 			Aes.KeySize = 128;
 			Aes.BlockSize = 128;
+
+			SecurityKey = securityKey;
 		}
 
-		private static string key
+		private string key
 		{
 			get
 			{
@@ -33,7 +36,7 @@ namespace Redbean.Security
 		public string Encryption(string text)
 		{
 			var sourceArray = Encoding.UTF8.GetBytes(key);
-			var keyBytes = new byte[16];
+			var keyBytes = new byte[byteIndex];
 			
 			var count = sourceArray.Length;
 			if (count > keyBytes.Length) 
@@ -53,7 +56,7 @@ namespace Redbean.Security
 		{
 			var fromBase64String = Convert.FromBase64String(text);
 			var sourceArray = Encoding.UTF8.GetBytes(key);
-			var keyBytes = new byte[16];
+			var keyBytes = new byte[byteIndex];
 			
 			var count = sourceArray.Length;
 			if (count > keyBytes.Length) 
