@@ -11,7 +11,7 @@ namespace Redbean.Utility
 		
 		private static Dictionary<string, string> playerPrefsGroup = new();
 
-		public static void Initialize()
+		public static void Setup()
 		{
 			if (!PlayerPrefs.HasKey(PLAYER_PREFS_KEY))
 				return;
