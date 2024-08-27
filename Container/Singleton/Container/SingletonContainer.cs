@@ -55,10 +55,12 @@ namespace Redbean
 			return Task.CompletedTask;
 		}
 
-		public void Dispose()
+		public Task Teardown()
 		{
 			foreach (var singleton in singletonGroup.Values)
 				singleton.Dispose();
+			
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

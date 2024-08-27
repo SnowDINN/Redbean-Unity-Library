@@ -1,5 +1,4 @@
 ﻿using System;
-
 #if UNITY_ANDROID
 using Unity.Notifications.Android;
 using UnityEngine.Android;
@@ -10,9 +9,9 @@ using Unity.Notifications.iOS;
 
 namespace Redbean.Mobile
 {
-	public class NativeNotification
+	public class LocalNotification
 	{
-		private const string PERMISSION_ANDROID = "android.permission.POST_NOTIFICATIONS";
+		private const string ANDROID_PUSH_PERMISSION = "android.permission.POST_NOTIFICATIONS";
 		private const string CHANNEL_ID = "REDBEAN_BoongGOD_PUSH_CHANNEL";
 		
 		/// <summary>
@@ -21,8 +20,8 @@ namespace Redbean.Mobile
 		public static void Setup()
 		{
 #if UNITY_ANDROID
-			if (!Permission.HasUserAuthorizedPermission(PERMISSION_ANDROID))
-				Permission.RequestUserPermission(PERMISSION_ANDROID);
+			if (!Permission.HasUserAuthorizedPermission(ANDROID_PUSH_PERMISSION))
+				Permission.RequestUserPermission(ANDROID_PUSH_PERMISSION);
 			
 			AndroidNotificationCenter.RegisterNotificationChannel(new AndroidNotificationChannel
 			{
@@ -34,7 +33,6 @@ namespace Redbean.Mobile
 			
 #elif UNITY_IOS
 			using var request = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
-			await TaskExtension.WaitUntil(() => request.IsFinished);
 #endif
 		}
 		

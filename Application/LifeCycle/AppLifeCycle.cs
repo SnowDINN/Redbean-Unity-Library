@@ -22,9 +22,9 @@ namespace Redbean
 			IsAppReady = true;
 		}
 
-		public override void OnDestroy()
+		public override async void OnDestroy()
 		{
-			AppBootstrap.BootstrapDispose();
+			await AppBootstrap.BootstrapDispose();
 			
 			IsAppReady = false;
 			

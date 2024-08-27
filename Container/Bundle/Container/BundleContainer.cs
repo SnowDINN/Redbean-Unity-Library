@@ -28,10 +28,12 @@ namespace Redbean.Bundle
 			var convert = ConvertDownloadSize(size);
 			Log.Success("Bundle", $"Success to load to the bundles. [ {convert.value}{convert.type} ]");
 		}
-		
-		public void Dispose()
+
+		public Task Teardown()
 		{
 			assetGroup.Clear();
+
+			return Task.CompletedTask;
 		}
 
 		public static T LoadAsset<T>(string key, Transform parent = null) where T : Object
@@ -45,8 +47,7 @@ namespace Redbean.Bundle
 				bundle = LoadBundle<T>(key);
 				assetGroup[key] = bundle;
 			}
-
-
+			
 			var asset = Object.Instantiate(bundle.Asset as T, parent);
 			assetGroup[key].References[asset.GetInstanceID()] = asset;
 			

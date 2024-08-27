@@ -40,7 +40,7 @@ namespace Redbean
 				await bootstrap.Setup();
 		}
 
-		public static void BootstrapDispose()
+		public static async Task BootstrapDispose()
 		{
 			var bootstrapGroup = new List<IAppBootstrap>();
 			foreach (var bootstraps in Bootstraps.Values)
@@ -48,7 +48,7 @@ namespace Redbean
 
 			bootstrapGroup.Reverse();
 			foreach (var bootstrap in bootstrapGroup)
-				bootstrap.Dispose();
+				await bootstrap.Teardown();
 		}
 	}
 }
