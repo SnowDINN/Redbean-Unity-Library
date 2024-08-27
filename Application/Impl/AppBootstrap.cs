@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Object = UnityEngine.Object;
 
 namespace Redbean
@@ -23,9 +24,7 @@ namespace Redbean
 			Application.runInBackground = true;
 			Application.targetFrameRate = 60;
 			
-			var go = new GameObject("[Application Life Cycle]");
-			go.AddComponent<AppLifeCycle>();
-			
+			var go = new GameObject("[Application Life Cycle]", typeof(AppLifeCycle));
 			Object.DontDestroyOnLoad(go);
 		}
 

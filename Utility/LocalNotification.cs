@@ -7,7 +7,7 @@ using UnityEngine.Android;
 using Unity.Notifications.iOS;
 #endif
 
-namespace Redbean.Mobile
+namespace Redbean.Utility
 {
 	public class LocalNotification
 	{

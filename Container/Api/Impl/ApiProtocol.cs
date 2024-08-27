@@ -16,9 +16,12 @@ namespace Redbean
 
 		public async Task<object> RequestAsync(CancellationToken cancellationToken = default)
 		{
-			RxApiBinder.OnRequestPublish(GetType());
+			var response = new object();
 			
-			var response = await Request(cancellationToken);
+			RxApiBinder.OnRequestPublish(GetType());
+
+			using (new DisableInteraction())
+				response = await Request(cancellationToken);
 			
 			RxApiBinder.OnResponsePublish(GetType(), response);
 
