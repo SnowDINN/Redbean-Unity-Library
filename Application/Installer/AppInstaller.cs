@@ -114,7 +114,7 @@ namespace Redbean
 	{
 		public static List<BootstrapContext> RuntimeBootstrap => Installer.RuntimeBootstrap;
 		
-		public const string ApiUri = "https://localhost:44395";
+		public const string ApiUri = "http://localhost";
 
 		public static string Version =>
 			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
