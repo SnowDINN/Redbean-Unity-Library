@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
+using Redbean.Utility;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -28,7 +28,6 @@ namespace Redbean
 			
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
-
 			
 			await AppBootstrap.BootstrapSetup(AppBootstrapType.Runtime);
 			
@@ -58,19 +57,6 @@ namespace Redbean
 		public static void AppCheckFail()
 		{
 			IsAppChecked = false;
-		}
-	}
-
-	public class DisableInteraction : IDisposable
-	{
-		public DisableInteraction()
-		{
-			AppLifeCycle.EventSystem.SetActive(false);
-		}
-		
-		public void Dispose()
-		{
-			AppLifeCycle.EventSystem.SetActive(true);
 		}
 	}
 }
