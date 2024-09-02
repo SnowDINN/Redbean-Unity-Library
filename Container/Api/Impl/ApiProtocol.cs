@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Redbean.Api;
 using Redbean.Rx;
 using Redbean.Utility;
 
@@ -15,23 +16,23 @@ namespace Redbean
 			return this;
 		}
 
-		public async Task<object> RequestAsync(CancellationToken cancellationToken = default)
+		public async Task<ApiResponse> RequestAsync(CancellationToken cancellationToken = default)
 		{
-			var response = new object();
+			var response = new ApiResponse();
 			
 			RxApiBinder.OnRequestPublish(GetType());
 
 			using (new DisableInteraction())
-				response = await Request(cancellationToken);
+				response = await Request(cancellationToken) as ApiResponse;
 			
 			RxApiBinder.OnResponsePublish(GetType(), response);
 
 			return response;
 		}
 
-		protected virtual Task<object> Request(CancellationToken cancellationToken = default)
+		protected virtual Task<IApiResponse> Request(CancellationToken cancellationToken = default)
 		{
-			return Task.FromResult(new object());
+			return default;
 		}
 	}
 }
