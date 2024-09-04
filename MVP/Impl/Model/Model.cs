@@ -1,15 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace Redbean.MVP
+﻿namespace Redbean.MVP
 {
-	public interface ISerializeModel : IModel
+	public class Model<T> : IModel where T : new()
 	{
-		[JsonIgnore]
-		IRxModel Rx { get; }
-	}
-
-	public interface IRxModel : IModel
-	{
-		void Publish(ISerializeModel value) { }
+		public T Database = new();
 	}
 }

@@ -41,13 +41,15 @@ namespace Redbean.Singleton
 		/// <summary>
 		/// 모델 재정의
 		/// </summary>
-		public static T Override<T>(T value) where T : IModel
+		public static T Override<T>(T value) where T : class, IModel
 		{
-			var targetFields = models[value.GetType()].GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
+			var model = GetModel<T>();
+			
+			var targetFields = model.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
 			var copyFields = value.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
 			
 			for (var i = 0; i < targetFields.Length; i++)
-				targetFields[i].SetValue(models[value.GetType()], copyFields[i].GetValue(value));
+				targetFields[i].SetValue(model, copyFields[i].GetValue(value));
 			
 			return value;
 		}
