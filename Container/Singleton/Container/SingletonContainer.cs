@@ -1,25 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Redbean
 {
-	public interface ISingleton : IExtension, IDisposable
-	{
-	}	
-	
 	public class SingletonContainer
 	{
 		private static readonly Dictionary<Type, ISingleton> singletons = new();
 		private static GameObject go;
-
-		/// <summary>
-		/// 싱글톤 전부 제거
-		/// </summary>
-		public static void Clear() => singletons.Clear();
 		
 		/// <summary>
 		/// 싱글톤 호출

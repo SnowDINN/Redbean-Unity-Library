@@ -6,11 +6,11 @@ using UnityEngine.AddressableAssets;
 
 namespace Redbean.Bundle
 {
-	public class BundleContainer : IAppBootstrap
+	public class BundleContainer
 	{
 		private static Dictionary<string, BundleAsset> assets = new();
 		
-		public async Task Setup()
+		public static async Task Setup()
 		{
 			var size = 0L;
 			foreach (var label in AddressableSettings.Labels)
@@ -27,13 +27,6 @@ namespace Redbean.Bundle
 
 			var convert = ConvertDownloadSize(size);
 			Log.Success("Bundle", $"Success to load to the bundles. [ {convert.value}{convert.type} ]");
-		}
-
-		public Task Teardown()
-		{
-			assets.Clear();
-
-			return Task.CompletedTask;
 		}
 
 		public static T LoadAsset<T>(string key, Transform parent = null) where T : Object

@@ -4,21 +4,13 @@ using System.Linq;
 
 namespace Redbean.Table
 {
-	public interface ITable
-	{
-		void Apply(string value);
-	}
-	
 	public partial class TableContainer
 	{
-		public static void StartParsing(Dictionary<string, string> data)
+		public static void Parse(Dictionary<string, string> tables)
 		{
-			if (data.Any())
-				Parse(data);
-		}
-
-		private static void Parse(Dictionary<string, string> tables)
-		{
+			if (!tables.Any())
+				return;
+			
 			foreach (var table in tables)
 			{
 				var tsv = $"{table.Value}".Split("\r\n");

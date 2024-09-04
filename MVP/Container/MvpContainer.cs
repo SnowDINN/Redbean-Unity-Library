@@ -2,19 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Redbean.MVP;
 
-namespace Redbean.Singleton
+namespace Redbean.MVP
 {
 	public class MvpContainer
 	{
 		private static readonly Dictionary<Type, IModel> models = new();
-
-		/// <summary>
-		/// 모델 전부 제거
-		/// </summary>
-		public void Clear() => models.Clear();
-		public void Dispose() => models.Clear();
 
 		/// <summary>
 		/// 모델 호출
@@ -24,7 +17,7 @@ namespace Redbean.Singleton
 			if (!models.ContainsKey(typeof(T)))
 				models[typeof(T)] = Activator.CreateInstance<T>();
 
-			return (T)models[typeof(T)];
+			return models[typeof(T)] as T;
 		}
 
 		/// <summary>
