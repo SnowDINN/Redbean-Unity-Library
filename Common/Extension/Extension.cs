@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Redbean.Api;
 using Redbean.MVP;
 using Redbean.Singleton;
 
@@ -21,68 +22,68 @@ namespace Redbean
 		/// <summary>
 		/// 싱글톤 호출
 		/// </summary>
-		private static T GetSingleton<T>() where T : ISingletonContainer => SingletonContainer.GetSingleton<T>();
+		private static T ExtensionGetSingleton<T>() where T : class, ISingleton => SingletonContainer.GetSingleton<T>();
 		
 		/// <summary>
 		/// 싱글톤 호출
 		/// </summary>
-		private static object GetSingleton(Type type) => SingletonContainer.GetSingleton(type);
+		private static object ExtensionGetSingleton(Type type) => SingletonContainer.GetSingleton(type);
 		
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		private static T GetModel<T>() where T : IModel => SingletonContainer.GetSingleton<MvpContainer>().GetModel<T>();
+		private static T ExtensionGetModel<T>() where T : class, IModel => MvpContainer.GetModel<T>();
 		
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		private static object GetModel(Type type) => SingletonContainer.GetSingleton<MvpContainer>().GetModel(type);
+		private static object ExtensionGetModel(Type type) => MvpContainer.GetModel(type);
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static T GetProtocol<T>() where T : ApiProtocol => SingletonContainer.GetSingleton<ApiContainer>().GetProtocol<T>();
+		private static T ExtensionGetProtocol<T>() where T : class, IApiProtocol => ApiContainer.GetProtocol<T>();
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		private static object GetProtocol(Type type) => SingletonContainer.GetSingleton<ApiContainer>().GetProtocol(type);
-		
-		/// <summary>
-		/// 모델 호출
-		/// </summary>
-		public static T GetModel<T>(this IExtension extension) where T : IModel => GetModel<T>();
-		
-		/// <summary>
-		/// 모델 호출
-		/// </summary>
-		public static object GetModel(this IExtension extension, Type type) => GetModel(type);
+		private static object ExtensionGetProtocol(Type type) => ApiContainer.GetProtocol(type);
 		
 		/// <summary>
 		/// 싱글톤 호출
 		/// </summary>
-		public static T GetSingleton<T>(this IExtension extension) where T : ISingletonContainer => GetSingleton<T>();
+		public static T GetSingleton<T>(this IExtension extension) where T : class, ISingleton => ExtensionGetSingleton<T>();
 		
 		/// <summary>
 		/// 싱글톤 호출
 		/// </summary>
-		public static object GetSingleton(this IExtension extension, Type type) => GetSingleton(type);
+		public static object GetSingleton(this IExtension extension, Type type) => ExtensionGetSingleton(type);
+		
+		/// <summary>
+		/// 모델 호출
+		/// </summary>
+		public static T GetModel<T>(this IExtension extension) where T : class, IModel => ExtensionGetModel<T>();
+		
+		/// <summary>
+		/// 모델 호출
+		/// </summary>
+		public static object GetModel(this IExtension extension, Type type) => ExtensionGetModel(type);
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static T GetProtocol<T>(this IExtension extension) where T : ApiProtocol => GetProtocol<T>();
+		public static T GetProtocol<T>(this IExtension extension) where T : class, IApiProtocol => ExtensionGetProtocol<T>();
 		
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static object GetProtocol(this IExtension extension, Type type) => GetProtocol(type);
+		public static object GetProtocol(this IExtension extension, Type type) => ExtensionGetProtocol(type);
 		
 #if UNITY_EDITOR
 		/// <summary>
 		/// API 호출
 		/// </summary>
-		public static T EditorGetApi<T>(this IExtension extension) where T : ApiProtocol => GetProtocol<T>();
+		public static T EditorGetApi<T>(this IExtension extension) where T : class, IApiProtocol => ExtensionGetProtocol<T>();
 #endif
 	}
 }

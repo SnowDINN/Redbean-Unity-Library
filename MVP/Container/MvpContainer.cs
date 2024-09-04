@@ -6,55 +6,48 @@ using Redbean.MVP;
 
 namespace Redbean.Singleton
 {
-	public class MvpContainer : ISingletonContainer
+	public class MvpContainer
 	{
-		private readonly Dictionary<Type, IModel> modelGroup = new();
-
-		public MvpContainer()
-		{
-			var models = AppDomain.CurrentDomain.GetAssemblies()
-				.SelectMany(x => x.GetTypes())
-				.Where(x => typeof(IModel).IsAssignableFrom(x)
-				            && !typeof(IRxModel).IsAssignableFrom(x)
-				            && !x.IsInterface
-				            && !x.IsAbstract)
-				.Select(x => Activator.CreateInstance(x) as IModel)
-				.ToArray();
-
-			foreach (var model in models)
-				modelGroup.TryAdd(model.GetType(), model);
-		}
-
-		public void Dispose()
-		{
-			modelGroup.Clear();
-		}
+		private static readonly Dictionary<Type, IModel> models = new();
 
 		/// <summary>
 		/// 모델 전부 제거
 		/// </summary>
-		public void Clear() => modelGroup.Clear();
+		public void Clear() => models.Clear();
+		public void Dispose() => models.Clear();
 
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		public T GetModel<T>() where T : IModel => (T)modelGroup[typeof(T)];
+		public static T GetModel<T>() where T : class, IModel
+		{
+			if (!models.ContainsKey(typeof(T)))
+				models[typeof(T)] = Activator.CreateInstance<T>();
+
+			return (T)models[typeof(T)];
+		}
 
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
-		public IModel GetModel(Type type) => modelGroup[type];
+		public static IModel GetModel(Type type)
+		{
+			if (!models.ContainsKey(type))
+				models[type] = Activator.CreateInstance(type) as IModel;
+
+			return models[type];
+		}
 
 		/// <summary>
 		/// 모델 재정의
 		/// </summary>
-		public T Override<T>(T value) where T : IModel
+		public static T Override<T>(T value) where T : IModel
 		{
-			var targetFields = modelGroup[value.GetType()].GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
+			var targetFields = models[value.GetType()].GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
 			var copyFields = value.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public).ToArray();
 			
 			for (var i = 0; i < targetFields.Length; i++)
-				targetFields[i].SetValue(modelGroup[value.GetType()], copyFields[i].GetValue(value));
+				targetFields[i].SetValue(models[value.GetType()], copyFields[i].GetValue(value));
 			
 			return value;
 		}

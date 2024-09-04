@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using Redbean.Api;
 
 namespace Redbean
 {
-	public class ApiContainer : ISingletonContainer
+	public class ApiContainer
 	{
+		private static readonly Dictionary<Type, ApiProtocol> apiProtocols = new();
+		
+		public delegate void onRequest(Type Type);
+		public static event onRequest OnRequest;
+		
+		public delegate void onResponse(Type Type, ApiResponse response);
+		public static event onResponse OnResponse;
+		
 		public static readonly HttpClient Http = new(new HttpClientHandler
 		{
 			UseProxy = false,
@@ -18,18 +28,26 @@ namespace Redbean
 			Timeout = TimeSpan.FromSeconds(60),
 		};
 
-		public T GetProtocol<T>() where T : ApiProtocol
+		public static void AddProtocol(Type type, ApiProtocol apiProtocol) => apiProtocols[type] = apiProtocol;
+
+		public static void OnRequestPublish(Type type) => OnRequest?.Invoke(type);
+
+		public static void OnResponsePublish(Type type, ApiResponse response) => OnResponse?.Invoke(type, response);
+
+		public static T GetProtocol<T>() where T : class, IApiProtocol
 		{
-			return Activator.CreateInstance<T>();
+			if (!apiProtocols.ContainsKey(typeof(T)))
+				Activator.CreateInstance<T>();
+
+			return apiProtocols[typeof(T)] as T;
 		}
-		
-		public object GetProtocol(Type type)
+
+		public static object GetProtocol(Type type)
 		{
-			return Activator.CreateInstance(type);
-		}
-		
-		public void Dispose()
-		{
+			if (!apiProtocols.ContainsKey(type))
+				Activator.CreateInstance(type);
+
+			return apiProtocols[type];
 		}
 	}
 }

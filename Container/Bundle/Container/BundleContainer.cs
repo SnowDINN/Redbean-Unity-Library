@@ -8,7 +8,7 @@ namespace Redbean.Bundle
 {
 	public class BundleContainer : IAppBootstrap
 	{
-		private static Dictionary<string, BundleAsset> assetGroup = new();
+		private static Dictionary<string, BundleAsset> assets = new();
 		
 		public async Task Setup()
 		{
@@ -31,7 +31,7 @@ namespace Redbean.Bundle
 
 		public Task Teardown()
 		{
-			assetGroup.Clear();
+			assets.Clear();
 
 			return Task.CompletedTask;
 		}
@@ -40,16 +40,16 @@ namespace Redbean.Bundle
 		{
 			var bundle = new BundleAsset();
 			
-			if (assetGroup.TryGetValue(key, out var assetBundle))
+			if (assets.TryGetValue(key, out var assetBundle))
 				bundle = assetBundle;
 			else
 			{
 				bundle = LoadBundle<T>(key);
-				assetGroup[key] = bundle;
+				assets[key] = bundle;
 			}
 			
 			var asset = Object.Instantiate(bundle.Asset as T, parent);
-			assetGroup[key].References[asset.GetInstanceID()] = asset;
+			assets[key].References[asset.GetInstanceID()] = asset;
 			
 			return asset;
 		}
@@ -58,7 +58,7 @@ namespace Redbean.Bundle
 		{
 #region Try Get Asset
 
-			if (!assetGroup.TryGetValue(key, out var assetBundle))
+			if (!assets.TryGetValue(key, out var assetBundle))
 				return;
 
 			if (assetBundle.References.Remove(instanceId, out var go))
@@ -71,7 +71,7 @@ namespace Redbean.Bundle
 			if (assetBundle.References.Any())
 				return;
 
-			if (assetGroup.Remove(key, out var removeBundle))
+			if (assets.Remove(key, out var removeBundle))
 				removeBundle.Release();
 
 #endregion
@@ -79,7 +79,7 @@ namespace Redbean.Bundle
 
 		public static void AutoRelease()
 		{
-			var assetsArray = assetGroup.ToList();
+			var assetsArray = assets.ToList();
 			for (var i = 0; i < assetsArray.Count; i++)
 			{
 				var referenceArray = assetsArray[i].Value.References.ToList();
@@ -97,7 +97,7 @@ namespace Redbean.Bundle
 				}
 			}
 			
-			assetGroup = assetsArray.ToDictionary(_ => _.Key, _ => _.Value);
+			assets = assetsArray.ToDictionary(_ => _.Key, _ => _.Value);
 		}
 		
 		private static (string value, string type) ConvertDownloadSize(long size)

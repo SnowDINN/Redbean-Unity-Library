@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: App
   m_EditorClassIdentifier: 
   RuntimeBootstrap:
-  - BootstrapName: Redbean.SingletonContainer
-    BootstrapType: 0
   - BootstrapName: Redbean.AppRuntimeBootstrap
     BootstrapType: 0
   - BootstrapName: Redbean.Bundle.BundleContainer

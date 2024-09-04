@@ -4,6 +4,11 @@ using System.Linq;
 
 namespace Redbean.Table
 {
+	public interface ITable
+	{
+		void Apply(string value);
+	}
+	
 	public partial class TableContainer
 	{
 		public static void StartParsing(Dictionary<string, string> data)
@@ -23,7 +28,7 @@ namespace Redbean.Table
 				foreach (var item in skipRows)
 				{
 					var type = Type.GetType($"{nameof(Redbean)}.Table.T{table.Key}");
-					if (Activator.CreateInstance(type) is ITableContainer instance)
+					if (Activator.CreateInstance(type) is ITable instance)
 						instance.Apply(item);
 				}
 			}

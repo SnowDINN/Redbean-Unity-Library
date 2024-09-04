@@ -1,8 +1,6 @@
 ﻿using System.Threading;
-using Redbean.Utility;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

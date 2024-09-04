@@ -5,11 +5,11 @@ namespace Redbean.MVP
 	public interface ISerializeModel : IModel
 	{
 		[JsonIgnore]
-		public IRxModel Rx { get; }
+		IRxModel Rx { get; }
 	}
 
 	public interface IRxModel : IModel
 	{
-		public void Publish(ISerializeModel value) { }
+		void Publish(ISerializeModel value) { }
 	}
 }

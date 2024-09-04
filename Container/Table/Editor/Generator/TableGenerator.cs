@@ -100,14 +100,14 @@ namespace Redbean.Table
 			var stringBuilder = new StringBuilder();
 			stringBuilder.AppendLine($"namespace {Namespace}.Table");
 			stringBuilder.AppendLine("{");
-			stringBuilder.AppendLine($"\tpublic class {classname} : {nameof(ITableContainer)}");
+			stringBuilder.AppendLine($"\tpublic class {classname} : {nameof(ITable)}");
 			stringBuilder.AppendLine("\t{");
 			
 			for (var i = 0; i < variableNames.Length; i++)
 				stringBuilder.AppendLine($"\t\tpublic {variableTypes[i]} {variableNames[i]};");
 			
 			stringBuilder.AppendLine();
-			stringBuilder.AppendLine($"\t\tpublic void {nameof(ITableContainer.Apply)}(string value)");
+			stringBuilder.AppendLine($"\t\tpublic void {nameof(ITable.Apply)}(string value)");
 			stringBuilder.AppendLine("\t\t{");
 			stringBuilder.AppendLine("\t\t\tvar split = value.Split(\"\\t\");");
 			stringBuilder.AppendLine($"\t\t\tvar item = new {classname}");
