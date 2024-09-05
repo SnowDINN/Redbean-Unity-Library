@@ -18,7 +18,6 @@ namespace Redbean
 		public virtual void Teardown()
 		{
 			source?.Cancel();
-			source?.Dispose();
 		}
 
 		private void OnAppExit()
