@@ -27,7 +27,7 @@ namespace Redbean
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
 			
-			await AppBootstrap.BootstrapSetup(AppBootstrapType.Runtime);
+			await AppBootstrap.BootstrapSetup(BootstrapKey.RUNTIME);
 			
 			IsAppReady = true;
 		}

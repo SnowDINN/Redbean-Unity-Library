@@ -7,15 +7,9 @@ using Object = UnityEngine.Object;
 
 namespace Redbean
 {
-	public enum AppBootstrapType
-	{
-		Runtime = 0,
-		Login = 100,
-	}
-	
 	public class AppBootstrap
 	{
-		private static readonly Dictionary<AppBootstrapType, IAppBootstrap[]> Bootstraps = new();
+		private static readonly Dictionary<string, IAppBootstrap[]> Bootstraps = new();
 		
 		[RuntimeInitializeOnLoadMethod]
 		public static void RuntimeBootstrap()
@@ -27,7 +21,7 @@ namespace Redbean
 			Object.DontDestroyOnLoad(go);
 		}
 
-		public static async Task BootstrapSetup(AppBootstrapType type)
+		public static async Task BootstrapSetup(string type)
 		{
 			var bootstrapContexts = AppSettings.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
 			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as IAppBootstrap).ToArray();

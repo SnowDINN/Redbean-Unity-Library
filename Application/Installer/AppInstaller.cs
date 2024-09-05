@@ -15,14 +15,15 @@ namespace Redbean
 	public class BootstrapContext
 	{
 		public string BootstrapName;
-		public AppBootstrapType BootstrapType;
+		public string BootstrapType;
 	}
 	
-	[CreateAssetMenu(fileName = "Application", menuName = "Redbean/Application")]
+	[CreateAssetMenu(fileName = "App", menuName = "Redbean/App")]
 	public class AppInstaller : ScriptableObject
 	{
 		[HideInInspector]
 		public List<BootstrapContext> RuntimeBootstrap = new();
+		public List<string> BootstrapTypes = new() { "RUNTIME" };
 		
 		[Header("Get application information during runtime")]
 		public string Version;
@@ -72,14 +73,17 @@ namespace Redbean
 		{
 			EditorGUI.BeginChangeCheck();
 			{
-				var indexOf = bootstrapArray.IndexOf(app.RuntimeBootstrap[index].BootstrapName);
-				if (indexOf < 0)
-					indexOf = 0;
-				indexOf = EditorGUI.Popup(new Rect(rect.x, rect.y + 2.5f, rect.width * 0.75f - 5, rect.height), indexOf, bootstrapArray.ToArray());
-				app.RuntimeBootstrap[index].BootstrapName = bootstrapArray[indexOf];
-				app.RuntimeBootstrap[index].BootstrapType =
-					(AppBootstrapType)EditorGUI.EnumPopup(new Rect(rect.x + rect.width * 0.75f, rect.y + 2.5f, rect.width  * 0.25f, rect.height),
-					                                      app.RuntimeBootstrap[index].BootstrapType);
+				var indexOfName = bootstrapArray.IndexOf(app.RuntimeBootstrap[index].BootstrapName);
+				if (indexOfName < 0)
+					indexOfName = 0;
+				indexOfName = EditorGUI.Popup(new Rect(rect.x, rect.y + 2.5f, rect.width * 0.75f - 5, rect.height), indexOfName, bootstrapArray.ToArray());
+				app.RuntimeBootstrap[index].BootstrapName = bootstrapArray[indexOfName];
+				
+				var indexOfType = app.BootstrapTypes.IndexOf(app.RuntimeBootstrap[index].BootstrapType);
+				if (indexOfType < 0)
+					indexOfType = 0;
+				indexOfType = EditorGUI.Popup(new Rect(rect.x + rect.width * 0.75f, rect.y + 2.5f, rect.width  * 0.25f, rect.height), indexOfType, app.BootstrapTypes.ToArray());
+				app.RuntimeBootstrap[index].BootstrapType = app.BootstrapTypes[indexOfType];
 			}
 			if (!EditorGUI.EndChangeCheck())
 				return;

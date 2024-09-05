@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RuntimeBootstrap:
   - BootstrapName: Redbean.AppRuntimeBootstrap
-    BootstrapType: 0
-  - BootstrapName: Redbean.AppLoginBootstrap
-    BootstrapType: 100
+    BootstrapType: RUNTIME
+  - BootstrapName: Redbean.AppResourceBootstrap
+    BootstrapType: LOGIN
+  BootstrapTypes:
+  - RUNTIME
+  - LOGIN
   Version: 
