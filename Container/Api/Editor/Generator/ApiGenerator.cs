@@ -24,7 +24,7 @@ namespace Redbean.Api
 		
 		public static async Task GetApiAsync(Type wrapper)
 		{
-			var uri = $"{AppSettings.ApiUri}/swagger/v1/swagger.json";
+			var uri = $"{ApiSettings.ApiUri}/swagger/v1/swagger.json";
 
 			var request = UnityWebRequest.Get(uri);
 			await request.SendWebRequest();

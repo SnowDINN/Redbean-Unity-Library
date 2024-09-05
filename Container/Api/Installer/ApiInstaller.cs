@@ -12,6 +12,9 @@ namespace Redbean.Api
 	
 	public class ApiSettings : SettingsBase<ApiInstaller>
 	{
+		public const string ApiUri = "http://localhost";
+		
+#if UNITY_EDITOR
 		public static string ProtocolPath
 		{
 			get => Installer.ProtocolPath;
@@ -21,5 +24,6 @@ namespace Redbean.Api
 				Save();
 			}
 		}
+#endif
 	}
 }

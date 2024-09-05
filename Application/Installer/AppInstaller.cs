@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Redbean.Base;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 #endif
@@ -42,7 +43,8 @@ namespace Redbean
 		{
 			bootstrapArray = AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(x => x.GetTypes())
-				.Where(x => typeof(IAppBootstrap).IsAssignableFrom(x)
+				.Where(x => typeof(IBootstrap).IsAssignableFrom(x)
+				            && x.Name != nameof(Bootstrap)
 				            && !x.IsInterface
 				            && !x.IsAbstract)
 				.Select(x => x.FullName)
@@ -116,11 +118,16 @@ namespace Redbean
 
 	public class AppSettings : SettingsBase<AppInstaller>
 	{
-		public static List<BootstrapContext> RuntimeBootstrap => Installer.RuntimeBootstrap;
-		
-		public const string ApiUri = "http://localhost";
-
 		public static string Version =>
 			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
+		
+		public static async Task BootstrapSetup(string type)
+		{
+			var bootstrapContexts = Installer.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
+			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as IBootstrap).ToArray();
+			
+			foreach (var bootstrap in bootstraps)
+				await bootstrap.Setup();
+		}
 	}
 }

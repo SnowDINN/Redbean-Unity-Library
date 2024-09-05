@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Redbean.MVP
 {
-	public class MvpContainer
+	public class MvpContainer : Container<Type, IModel>
 	{
-		private static readonly Dictionary<Type, IModel> models = new();
-
 		/// <summary>
 		/// 모델 호출
 		/// </summary>
 		public static T GetModel<T>() where T : class, IModel
 		{
-			if (!models.ContainsKey(typeof(T)))
-				models[typeof(T)] = Activator.CreateInstance<T>();
+			if (!container.ContainsKey(typeof(T)))
+				container[typeof(T)] = Activator.CreateInstance<T>();
 
-			return models[typeof(T)] as T;
+			return container[typeof(T)] as T;
 		}
 
 		/// <summary>
@@ -25,10 +22,10 @@ namespace Redbean.MVP
 		/// </summary>
 		public static IModel GetModel(Type type)
 		{
-			if (!models.ContainsKey(type))
-				models[type] = Activator.CreateInstance(type) as IModel;
+			if (!container.ContainsKey(type))
+				container[type] = Activator.CreateInstance(type) as IModel;
 
-			return models[type];
+			return container[type];
 		}
 
 		/// <summary>

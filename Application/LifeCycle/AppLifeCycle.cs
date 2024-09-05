@@ -1,12 +1,26 @@
 ﻿using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 namespace Redbean
 {
+	public class AppStart
+	{
+		[RuntimeInitializeOnLoadMethod]
+		public static void Start()
+		{
+			Application.runInBackground = true;
+			Application.targetFrameRate = 60;
+			
+			var go = new GameObject("[Application Life Cycle]", typeof(AppLifeCycle));
+			Object.DontDestroyOnLoad(go);
+		}
+	}
+	
 	public class AppLifeCycle : MonoBase
 	{
 		public static bool IsAppChecked { get; private set; }
@@ -14,10 +28,9 @@ namespace Redbean
 		
 		public static GameObject AudioSystem { get; private set; }
 		public static GameObject EventSystem { get; private set; }
-
-		public static CancellationToken AppCancellationToken => cancellationTokenSource.Token;
-
-		private static readonly CancellationTokenSource cancellationTokenSource = new();
+		
+		public delegate void onAppExit();
+		public static event onAppExit OnAppExit;
 
 		private async void Awake()
 		{
@@ -27,19 +40,15 @@ namespace Redbean
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
 			
-			await AppBootstrap.BootstrapSetup(BootstrapKey.RUNTIME);
+			await AppSettings.BootstrapSetup(BootstrapKey.RUNTIME);
 			
 			IsAppReady = true;
 		}
 
-		public override async void OnDestroy()
+		public override void OnDestroy()
 		{
-			await AppBootstrap.BootstrapDispose();
-			
 			IsAppReady = false;
-			
-			cancellationTokenSource.Cancel();
-			cancellationTokenSource.Dispose();
+			OnAppExit?.Invoke();
 			
 #if UNITY_EDITOR
 			if (EditorApplication.isPlaying)

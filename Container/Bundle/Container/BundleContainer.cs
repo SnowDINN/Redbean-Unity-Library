@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Redbean.Bundle
 {
-	public class BundleContainer
+	public class BundleContainer : Container<string, BundleAsset>
 	{
-		private static Dictionary<string, BundleAsset> assets = new();
-		
 		public static async Task Setup()
 		{
 			var size = 0L;
@@ -33,16 +30,16 @@ namespace Redbean.Bundle
 		{
 			var bundle = new BundleAsset();
 			
-			if (assets.TryGetValue(key, out var assetBundle))
+			if (container.TryGetValue(key, out var assetBundle))
 				bundle = assetBundle;
 			else
 			{
 				bundle = LoadBundle<T>(key);
-				assets[key] = bundle;
+				container[key] = bundle;
 			}
 			
 			var asset = Object.Instantiate(bundle.Asset as T, parent);
-			assets[key].References[asset.GetInstanceID()] = asset;
+			container[key].References[asset.GetInstanceID()] = asset;
 			
 			return asset;
 		}
@@ -51,7 +48,7 @@ namespace Redbean.Bundle
 		{
 #region Try Get Asset
 
-			if (!assets.TryGetValue(key, out var assetBundle))
+			if (!container.TryGetValue(key, out var assetBundle))
 				return;
 
 			if (assetBundle.References.Remove(instanceId, out var go))
@@ -64,7 +61,7 @@ namespace Redbean.Bundle
 			if (assetBundle.References.Any())
 				return;
 
-			if (assets.Remove(key, out var removeBundle))
+			if (container.Remove(key, out var removeBundle))
 				removeBundle.Release();
 
 #endregion
@@ -72,7 +69,7 @@ namespace Redbean.Bundle
 
 		public static void AutoRelease()
 		{
-			var assetsArray = assets.ToList();
+			var assetsArray = container.ToList();
 			for (var i = 0; i < assetsArray.Count; i++)
 			{
 				var referenceArray = assetsArray[i].Value.References.ToList();
@@ -90,7 +87,7 @@ namespace Redbean.Bundle
 				}
 			}
 			
-			assets = assetsArray.ToDictionary(_ => _.Key, _ => _.Value);
+			container = assetsArray.ToDictionary(_ => _.Key, _ => _.Value);
 		}
 		
 		private static (string value, string type) ConvertDownloadSize(long size)

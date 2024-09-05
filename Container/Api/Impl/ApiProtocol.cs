@@ -8,11 +8,6 @@ namespace Redbean
 	public class ApiProtocol : IApiProtocol
 	{
 		protected object[] args;
-
-		public ApiProtocol()
-		{
-			ApiContainer.AddProtocol(GetType(), this);
-		}
 		
 		public ApiProtocol Parameter(params object[] args)
 		{

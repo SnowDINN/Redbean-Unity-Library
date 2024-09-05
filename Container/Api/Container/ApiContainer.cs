@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using Redbean.Api;
 
 namespace Redbean
 {
-	public class ApiContainer
+	public class ApiContainer : Container<Type, IApiProtocol>
 	{
-		private static readonly Dictionary<Type, ApiProtocol> apiProtocols = new();
-		
 		public delegate void onRequest(Type Type);
 		public static event onRequest OnRequest;
 		
@@ -20,7 +17,7 @@ namespace Redbean
 			UseProxy = false,
 		})
 		{
-			BaseAddress = new Uri(AppSettings.ApiUri),
+			BaseAddress = new Uri(ApiSettings.ApiUri),
 			DefaultRequestHeaders =
 			{
 				{ "Version", AppSettings.Version },
@@ -28,7 +25,7 @@ namespace Redbean
 			Timeout = TimeSpan.FromSeconds(60),
 		};
 
-		public static void AddProtocol(Type type, ApiProtocol apiProtocol) => apiProtocols[type] = apiProtocol;
+		public static void AddProtocol(Type type, ApiProtocol apiProtocol) => container[type] = apiProtocol;
 
 		public static void OnRequestPublish(Type type) => OnRequest?.Invoke(type);
 
@@ -36,18 +33,18 @@ namespace Redbean
 
 		public static T GetProtocol<T>() where T : class, IApiProtocol
 		{
-			if (!apiProtocols.ContainsKey(typeof(T)))
-				Activator.CreateInstance<T>();
+			if (!container.ContainsKey(typeof(T)))
+				container[typeof(T)] = Activator.CreateInstance<T>();
 
-			return apiProtocols[typeof(T)] as T;
+			return container[typeof(T)] as T;
 		}
 
 		public static object GetProtocol(Type type)
 		{
-			if (!apiProtocols.ContainsKey(type))
-				Activator.CreateInstance(type);
+			if (!container.ContainsKey(type))
+				container[type] = Activator.CreateInstance(type) as IApiProtocol;
 
-			return apiProtocols[type];
+			return container[type];
 		}
 	}
 }
