@@ -26,7 +26,7 @@ namespace Redbean.Bundle
 			}
 
 			var convert = ConvertDownloadSize(size);
-			Log.Success("Bundle", $"Success to load to the bundles. [ {convert.value}{convert.type} ]");
+			Log.Success("BUNDLE", $"Success to load to the bundle. [ {convert.value}{convert.type} ]");
 		}
 
 		public static T LoadAsset<T>(string key, Transform parent = null) where T : Object
