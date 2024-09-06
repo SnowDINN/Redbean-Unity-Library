@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,16 +23,16 @@ namespace Redbean
 	
 	public class AppLifeCycle : MonoBase
 	{
+		public delegate void onAppExit();
+		public static event onAppExit OnAppExit;
+		
 		public static bool IsAppChecked { get; private set; }
 		public static bool IsAppReady { get; private set; }
 		
 		public static GameObject AudioSystem { get; private set; }
 		public static GameObject EventSystem { get; private set; }
-		
-		public delegate void onAppExit();
-		public static event onAppExit OnAppExit;
 
-		private void Awake()
+		private async void Awake()
 		{
 			AudioSystem = new GameObject("[Audio System]", typeof(AudioSource), typeof(AudioSource), typeof(AudioSource), typeof(AudioSource));
 			AudioSystem.transform.SetParent(transform);
@@ -40,7 +40,7 @@ namespace Redbean
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
 			
-			AppSettings.BootstrapSetup(BootstrapKey.RUNTIME);
+			await AppSettings.BootstrapSetup(BootstrapKey.OnStart);
 			
 			IsAppReady = true;
 		}

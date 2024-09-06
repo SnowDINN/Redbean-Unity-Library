@@ -46,7 +46,7 @@ namespace Redbean
 			bootstrapArray = AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(x => x.GetTypes())
 				.Where(x => typeof(IBootstrap).IsAssignableFrom(x)
-				            && x.Name != nameof(Bootstrap)
+				            && typeof(Bootstrap).FullName != x.FullName
 				            && !x.IsInterface
 				            && !x.IsAbstract)
 				.Select(x => x.FullName)
@@ -125,13 +125,13 @@ namespace Redbean
 		public static string Version =>
 			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
 		
-		public static void BootstrapSetup(string type)
+		public static async Task BootstrapSetup(string type)
 		{
 			var bootstrapContexts = Installer.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
 			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as Bootstrap).ToArray();
 			
 			foreach (var bootstrap in bootstraps)
-				bootstrap.Start();
+				await bootstrap.Start();
 		}
 	}
 }

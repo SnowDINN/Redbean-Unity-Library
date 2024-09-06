@@ -98,6 +98,8 @@ namespace Redbean.Table
 			var variableTypes = value[1].Split("\t");
 
 			var stringBuilder = new StringBuilder();
+			stringBuilder.AppendLine("using System.Collections.Generic;");
+			stringBuilder.AppendLine();
 			stringBuilder.AppendLine($"namespace {Namespace}.Table");
 			stringBuilder.AppendLine("{");
 			stringBuilder.AppendLine($"\tpublic class {classname} : {nameof(ITable)}");
@@ -107,11 +109,15 @@ namespace Redbean.Table
 				stringBuilder.AppendLine($"\t\tpublic {variableTypes[i]} {variableNames[i]};");
 			
 			stringBuilder.AppendLine();
-			stringBuilder.AppendLine($"\t\tpublic void {nameof(ITable.Apply)}(string value)");
+			stringBuilder.AppendLine($"\t\tpublic void {nameof(ITable.Apply)}(IEnumerable<string> values)");
 			stringBuilder.AppendLine("\t\t{");
-			stringBuilder.AppendLine("\t\t\tvar split = value.Split(\"\\t\");");
-			stringBuilder.AppendLine($"\t\t\tvar item = new {classname}");
+			stringBuilder.AppendLine($"\t\t\t{nameof(TableContainer)}.{key}.Clear();");
+			stringBuilder.AppendLine();
+			stringBuilder.AppendLine("\t\t\tforeach (var value in values)");
 			stringBuilder.AppendLine("\t\t\t{");
+			stringBuilder.AppendLine("\t\t\t\tvar split = value.Split(\"\\t\");");
+			stringBuilder.AppendLine($"\t\t\t\tvar item = new {classname}");
+			stringBuilder.AppendLine("\t\t\t\t{");
 
 			for (var i = 0; i < variableNames.Length; i++)
 			{
@@ -130,12 +136,13 @@ namespace Redbean.Table
 					_ => $"split[{i}],"
 				};
 
-				stringBuilder.AppendLine($"\t\t\t\t{variableNames[i]} = {convert}");
+				stringBuilder.AppendLine($"\t\t\t\t\t{variableNames[i]} = {convert}");
 			}
 			
-			stringBuilder.AppendLine("\t\t\t};");
+			stringBuilder.AppendLine("\t\t\t\t};");
 			stringBuilder.AppendLine();
-			stringBuilder.AppendLine($"\t\t\t{nameof(TableContainer)}.{key}.Add(item.Id, item);");
+			stringBuilder.AppendLine($"\t\t\t\t{nameof(TableContainer)}.{key}.Add(item.Id, item);");
+			stringBuilder.AppendLine("\t\t\t}");
 			stringBuilder.AppendLine("\t\t}");
 			stringBuilder.AppendLine("\t}");
 			stringBuilder.AppendLine("}");

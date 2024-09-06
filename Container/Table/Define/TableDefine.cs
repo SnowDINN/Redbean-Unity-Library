@@ -1,7 +1,9 @@
-﻿namespace Redbean.Table
+﻿using System.Collections.Generic;
+
+namespace Redbean.Table
 {
 	public interface ITable
 	{
-		void Apply(string value);
+		void Apply(IEnumerable<string> value);
 	}
 }

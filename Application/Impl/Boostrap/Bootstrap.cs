@@ -8,7 +8,7 @@ namespace Redbean
 		private CancellationTokenSource source;
 		protected CancellationToken cancellationToken => source.Token;
 		
-		public async void Start()
+		public async Task Start()
 		{
 			AppLifeCycle.OnAppExit += OnAppExit;
 

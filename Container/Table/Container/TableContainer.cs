@@ -13,13 +13,9 @@ namespace Redbean.Table
 				var tsv = $"{page.Value}".Split("\r\n");
 				
 				// Skip Name and Type Rows
-				var skipRows = tsv.Skip(2);
-				foreach (var item in skipRows)
-				{
-					var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
-					if (Activator.CreateInstance(type) is ITable instance)
-						instance.Apply(item);
-				}
+				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
+				if (Activator.CreateInstance(type) is ITable instance)
+					instance.Apply(tsv.Skip(2));
 			}
 
 			Log.Success("TABLE", $"Success to load to the table. [ Sheet : {container.Count} ]");
@@ -36,13 +32,9 @@ namespace Redbean.Table
 				var tsv = $"{page.Value}".Split("\r\n");
 				
 				// Skip Name and Type Rows
-				var skipRows = tsv.Skip(2);
-				foreach (var item in skipRows)
-				{
-					var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
-					if (Activator.CreateInstance(type) is ITable instance)
-						instance.Apply(item);
-				}
+				var type = Type.GetType($"{nameof(Redbean)}.Table.T{page.Key}");
+				if (Activator.CreateInstance(type) is ITable instance)
+					instance.Apply(tsv.Skip(2));
 			}
 			else
 				Log.Fail("TABLE", $"Fail to load to the table. [ Sheet : {key} ]");
