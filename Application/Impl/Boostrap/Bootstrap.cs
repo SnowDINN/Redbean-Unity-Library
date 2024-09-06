@@ -5,26 +5,26 @@ namespace Redbean
 {
 	public class Bootstrap : IBootstrap
 	{
-		private readonly CancellationTokenSource source = new();
+		private CancellationTokenSource source;
 		protected CancellationToken cancellationToken => source.Token;
 		
-		public virtual Task Setup()
+		public async void Start()
 		{
 			AppLifeCycle.OnAppExit += OnAppExit;
-			
-			return Task.CompletedTask;
-		}
 
-		public virtual void Teardown()
-		{
-			source?.Cancel();
+			source = new CancellationTokenSource();
+			await Setup();
 		}
-
-		private void OnAppExit()
+		
+		private async void OnAppExit()
 		{
 			AppLifeCycle.OnAppExit -= OnAppExit;
 
-			Teardown();
+			source?.Cancel();
+			await Teardown();
 		}
+
+		protected virtual Task Setup() => Task.CompletedTask;
+		protected virtual Task Teardown() => Task.CompletedTask;
 	}
 }

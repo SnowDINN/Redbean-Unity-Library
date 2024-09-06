@@ -6,8 +6,6 @@ namespace Redbean.Table
 {
 	public partial class TableContainer : Container<string, string>
 	{
-		public static void SetTable(Dictionary<string, string> data) => container = data;
-	
 		public static void Setup()
 		{
 			foreach (var page in container)
@@ -49,5 +47,7 @@ namespace Redbean.Table
 			else
 				Log.Fail("TABLE", $"Fail to load to the table. [ Sheet : {key} ]");
 		}
+		
+		public static void SetRawData(Dictionary<string, string> data) => container = data;
 	}
 }

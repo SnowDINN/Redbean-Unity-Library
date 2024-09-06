@@ -32,7 +32,7 @@ namespace Redbean
 		public delegate void onAppExit();
 		public static event onAppExit OnAppExit;
 
-		private async void Awake()
+		private void Awake()
 		{
 			AudioSystem = new GameObject("[Audio System]", typeof(AudioSource), typeof(AudioSource), typeof(AudioSource), typeof(AudioSource));
 			AudioSystem.transform.SetParent(transform);
@@ -40,7 +40,7 @@ namespace Redbean
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
 			
-			await AppSettings.BootstrapSetup(BootstrapKey.RUNTIME);
+			AppSettings.BootstrapSetup(BootstrapKey.RUNTIME);
 			
 			IsAppReady = true;
 		}

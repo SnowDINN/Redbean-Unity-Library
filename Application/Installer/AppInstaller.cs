@@ -31,6 +31,8 @@ namespace Redbean
 	}
 
 #if UNITY_EDITOR
+#region UNITY EDITOR
+	
 	[CustomEditor(typeof(AppInstaller), true)]
 	public class AppInstallerEditor : Editor
 	{
@@ -114,6 +116,8 @@ namespace Redbean
 			serializedObject.ApplyModifiedProperties();
 		}
 	}
+	
+#endregion
 #endif
 
 	public class AppSettings : SettingsBase<AppInstaller>
@@ -121,13 +125,13 @@ namespace Redbean
 		public static string Version =>
 			string.IsNullOrEmpty(Installer.Version) ? Application.version : Installer.Version;
 		
-		public static async Task BootstrapSetup(string type)
+		public static void BootstrapSetup(string type)
 		{
 			var bootstrapContexts = Installer.RuntimeBootstrap.Where(_ => _.BootstrapType == type).ToArray();
-			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as IBootstrap).ToArray();
+			var bootstraps = bootstrapContexts.Select(_ => Activator.CreateInstance(Type.GetType(_.BootstrapName)) as Bootstrap).ToArray();
 			
 			foreach (var bootstrap in bootstraps)
-				await bootstrap.Setup();
+				bootstrap.Start();
 		}
 	}
 }

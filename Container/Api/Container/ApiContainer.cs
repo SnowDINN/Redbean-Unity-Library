@@ -25,10 +25,7 @@ namespace Redbean
 			Timeout = TimeSpan.FromSeconds(60),
 		};
 
-		public static void AddProtocol(Type type, ApiProtocol apiProtocol) => container[type] = apiProtocol;
-
 		public static void OnRequestPublish(Type type) => OnRequest?.Invoke(type);
-
 		public static void OnResponsePublish(Type type, ApiResponse response) => OnResponse?.Invoke(type, response);
 
 		public static T GetProtocol<T>() where T : class, IApiProtocol

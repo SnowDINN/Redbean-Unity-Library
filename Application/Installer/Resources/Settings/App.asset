@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: App
   m_EditorClassIdentifier: 
   RuntimeBootstrap:
-  - BootstrapName: Redbean.AppRuntimeBootstrap
-    BootstrapType: RUNTIME
+  - BootstrapName: Redbean.OnStartBootstrap
+    BootstrapType: OnStart
   - BootstrapName: Redbean.AppResourceBootstrap
-    BootstrapType: LOGIN
+    BootstrapType: OnLogin
   BootstrapTypes:
-  - RUNTIME
-  - LOGIN
+  - OnStart
+  - OnLogin
   Version: 
