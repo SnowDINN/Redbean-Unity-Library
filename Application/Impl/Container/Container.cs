@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Redbean
 {
@@ -14,8 +13,8 @@ namespace Redbean
 					return m_container;
 
 				AppLifeCycle.OnAppExit += OnAppExit;
-				
 				m_container = new Dictionary<Key, Value>();
+				
 				return m_container;
 			}
 			
@@ -25,8 +24,7 @@ namespace Redbean
 		private static void OnAppExit()
 		{
 			AppLifeCycle.OnAppExit -= OnAppExit;
-			
-			container.Clear();
+			m_container.Clear();
 		}
 	}
 }

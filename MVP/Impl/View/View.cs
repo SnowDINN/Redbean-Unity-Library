@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -56,7 +55,7 @@ namespace Redbean.MVP
 	{
 		private View view => target as View;
 		
-		private List<string> presenterArray;
+		private string[] presenterArray;
 		private bool useSerializeField;
 		
 		private void OnEnable()
@@ -64,24 +63,20 @@ namespace Redbean.MVP
 			presenterArray = AppDomain.CurrentDomain.GetAssemblies()
 			                          .SelectMany(x => x.GetTypes())
 			                          .Where(x => typeof(IPresenter).IsAssignableFrom(x)
+			                                      && typeof(Presenter).FullName != x.FullName
 			                                      && !x.IsInterface
 			                                      && !x.IsAbstract)
 			                          .Where(x => x
 			                                      .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
 			                                      .Any(_ => _.FieldType == view.GetType()))
 			                          .Select(x => x.FullName)
-			                          .ToList();
-			
-			if (presenterArray.Contains(typeof(Presenter).FullName))
-				presenterArray.Remove(typeof(Presenter).FullName);
+			                          .ToArray();
 			
 			foreach (var field in view.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
 			{
 				var attributes = field.GetCustomAttributes(false);
-				if (!attributes.Any())
-					continue;
-
-				useSerializeField = attributes.Any(_ => _ is SerializeField);
+				if (attributes.Any())
+					useSerializeField = attributes.Any(_ => _ is SerializeField);
 			}
 		}
 
@@ -94,10 +89,10 @@ namespace Redbean.MVP
 				{
 					EditorGUI.BeginChangeCheck();
 					{
-						var index = presenterArray.IndexOf(view.PresenterFullName);
+						var index = Array.IndexOf(presenterArray, view.PresenterFullName);
 						if (index < 0)
 							index = 0;
-						index = EditorGUILayout.Popup(string.Empty, index, presenterArray.ToArray());
+						index = EditorGUILayout.Popup(string.Empty, index, presenterArray);
 					
 						view.PresenterFullName = presenterArray[index];
 					}

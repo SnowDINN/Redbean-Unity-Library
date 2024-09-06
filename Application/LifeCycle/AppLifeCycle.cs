@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 #if UNITY_EDITOR
@@ -40,7 +39,7 @@ namespace Redbean
 			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
 			EventSystem.transform.SetParent(transform);
 			
-			await AppSettings.BootstrapSetup(BootstrapKey.OnStart);
+			await AppSettings.BootstrapSetup<OnStartBootstrap>();
 			
 			IsAppReady = true;
 		}
