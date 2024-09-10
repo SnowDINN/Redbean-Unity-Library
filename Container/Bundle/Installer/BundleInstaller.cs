@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Redbean.Bundle
 {
-	[CreateAssetMenu(fileName = "Bundle", menuName = "Redbean/Bundle")]
+	[CreateAssetMenu(fileName = "Bundle", menuName = "Redbean/Library/Bundle")]
 	public class BundleInstaller : ScriptableObject
 	{
 		[Header("Get addressable information during runtime")]

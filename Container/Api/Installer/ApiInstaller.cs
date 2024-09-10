@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Redbean.Api
 {
-	[CreateAssetMenu(fileName = "Api", menuName = "Redbean/Api")]
+	[CreateAssetMenu(fileName = "Api", menuName = "Redbean/Library/Api")]
 	public class ApiInstaller : ScriptableObject
 	{
 		[Header("Get generation path")]

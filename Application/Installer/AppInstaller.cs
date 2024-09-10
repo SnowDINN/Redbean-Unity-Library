@@ -12,7 +12,7 @@ namespace Redbean
 		public string BootstrapType;
 	}
 	
-	[CreateAssetMenu(fileName = "App", menuName = "Redbean/App")]
+	[CreateAssetMenu(fileName = "App", menuName = "Redbean/Library/App")]
 	public class AppInstaller : ScriptableObject
 	{
 		[Header("Get application information during runtime")]

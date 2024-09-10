@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Redbean.Table
 {
-	[CreateAssetMenu(fileName = "Table", menuName = "Redbean/Table")]
+	[CreateAssetMenu(fileName = "Table", menuName = "Redbean/Library/Table")]
 	public class TableInstaller : ScriptableObject
 	{
 		[Header("Get generation path")]
