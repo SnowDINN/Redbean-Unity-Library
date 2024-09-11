@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Redbean.Api;
-using Redbean.Utility;
 
 namespace Redbean
 {
@@ -18,10 +17,8 @@ namespace Redbean
 		public async Task<ApiResponse> RequestAsync(CancellationToken cancellationToken = default)
 		{
 			ApiContainer.OnRequestPublish(GetType());
-
-			var response = new ApiResponse();
-			using (new DisableInteraction())
-				response = await Request(cancellationToken);
+			
+			var response = await Request(cancellationToken);
 			
 			ApiContainer.OnResponsePublish(GetType(), response);
 

@@ -29,17 +29,13 @@ namespace Redbean
 		public static bool IsAppReady { get; private set; }
 		
 		public static GameObject AudioSystem { get; private set; }
-		public static GameObject EventSystem { get; private set; }
 
 		private async void Awake()
 		{
 			AudioSystem = new GameObject("[Audio System]", typeof(AudioSource), typeof(AudioSource), typeof(AudioSource), typeof(AudioSource));
 			AudioSystem.transform.SetParent(transform);
 			
-			EventSystem = new GameObject("[Event System]", typeof(EventSystem), typeof(StandaloneInputModule));
-			EventSystem.transform.SetParent(transform);
-			
-			await AppSettings.BootstrapSetup<OnStartBootstrap>();
+			await AppSettings.BootstrapSetup<OnValidationBootstrap>();
 			
 			IsAppReady = true;
 		}
