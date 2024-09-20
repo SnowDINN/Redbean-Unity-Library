@@ -24,17 +24,16 @@ namespace Redbean
 	{
 		public delegate void onAppExit();
 		public static event onAppExit OnAppExit;
-		
+
+		public static Transform Transform { get; private set; }
 		public static bool IsAppChecked { get; private set; }
 		public static bool IsAppReady { get; private set; }
-		
-		public static GameObject AudioSystem { get; private set; }
 
 		private async void Awake()
 		{
-			AudioSystem = new GameObject("[Audio System]", typeof(AudioSource), typeof(AudioSource), typeof(AudioSource), typeof(AudioSource));
-			AudioSystem.transform.SetParent(transform);
+			Transform = transform;
 			
+			await AppSettings.BootstrapSetup<OnSystemBootstrap>();
 			await AppSettings.BootstrapSetup<OnValidationBootstrap>();
 			
 			IsAppReady = true;
