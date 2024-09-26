@@ -19,9 +19,9 @@ namespace Redbean
 		private async void OnAppExit()
 		{
 			AppLifeCycle.OnAppExit -= OnAppExit;
-			await Teardown();
 
 			source?.Cancel();
+			await Teardown();
 		}
 
 		protected virtual Task Setup() => Task.CompletedTask;
